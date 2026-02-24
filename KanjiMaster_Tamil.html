@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="ta-JP">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>漢字マスター — Kanji Master Tamil</title>
+<style>
+/* ============================================================
+   KANJI MASTER — TAMIL LEARNING APP
+   Design: Refined dark academia with ink-brush aesthetic
+   Typography: Noto Serif JP + Nunito
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Nunito:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&display=swap');
+
+/* ── CSS VARIABLES ── */
+:root {
+  --bg: #0f0e13;
+  --bg2: #16141d;
+  --bg3: #1e1b28;
+  --card: #211f2e;
+  --card2: #2a2739;
+  --border: #38344d;
+  --border2: #4a4566;
+  --text: #f0edf8;
+  --text2: #b8b0d4;
+  --text3: #7a7290;
+  --accent: #e8a045;
+  --accent2: #f0c070;
+  --accent3: #c47c20;
+  --red: #e05555;
+  --green: #4caf7d;
+  --blue: #5b8dee;
+  --purple: #9b6ee8;
+  --pink: #e86ea8;
+  --teal: #3dbdb8;
+  --ink: #2d1f4a;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-sm: 0 4px 16px rgba(0,0,0,0.3);
+  --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; font-size: 16px; }
+body {
+  font-family: 'Nunito', 'Noto Sans Tamil', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── RUBY / FURIGANA ── */
+ruby { ruby-position: over; }
+rt { font-size: 0.55em; color: var(--accent2); letter-spacing: 0.05em; font-family: 'Noto Serif JP', serif; }
+rp { display: none; }
+
+/* ── TOP HEADER ── */
+#app-header {
+  background: linear-gradient(135deg, #1a1726 0%, #211f2e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+.app-logo {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.03em;
+}
+.app-logo span { font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 700; color: var(--text3); -webkit-text-fill-color: var(--text3); display: block; margin-top: -2px; }
+.header-stats { display: flex; gap: 12px; align-items: center; }
+.hstat { text-align: center; }
+.hstat-val { font-size: 1.05rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.hstat-lbl { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.streak-badge {
+  background: linear-gradient(135deg, #e05555, #e8a045);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── MAIN CONTENT AREA ── */
+#app-main {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── VIEWS ── */
+.view {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: none;
+  animation: fadeSlide 0.3s ease;
+}
+.view.active { display: block; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  flex-shrink: 0;
+  height: 60px;
+  z-index: 100;
+}
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  background: none;
+  color: var(--text3);
+  padding: 6px 2px;
+  position: relative;
+}
+.nav-btn.active { color: var(--accent); }
+.nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 0 0 4px 4px;
+}
+.nav-icon { font-size: 1.3rem; line-height: 1; }
+.nav-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+.card:active { transform: scale(0.98); }
+.card-sm { padding: 12px; border-radius: var(--radius-sm); }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  margin: 20px 0 10px;
+}
+.section-title:first-child { margin-top: 4px; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #1a1200; }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,69,0.4); }
+.btn-ghost { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-success { background: linear-gradient(135deg, var(--green), #6dd98e); color: #0a1f12; }
+.btn-danger { background: linear-gradient(135deg, var(--red), #f07070); color: #fff; }
+.btn-sm { padding: 7px 14px; font-size: 0.78rem; }
+.btn-block { width: 100%; }
+
+/* ── TAGS / BADGES ── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tag-n5 { background: rgba(76,175,125,0.2); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+.tag-n4 { background: rgba(91,141,238,0.2); color: var(--blue); border: 1px solid rgba(91,141,238,0.3); }
+.tag-n3 { background: rgba(155,110,232,0.2); color: var(--purple); border: 1px solid rgba(155,110,232,0.3); }
+.tag-n2 { background: rgba(232,110,168,0.2); color: var(--pink); border: 1px solid rgba(232,110,168,0.3); }
+.tag-n1 { background: rgba(224,85,85,0.2); color: var(--red); border: 1px solid rgba(224,85,85,0.3); }
+.tag-known { background: rgba(76,175,125,0.25); color: var(--green); }
+.tag-review { background: rgba(232,160,69,0.25); color: var(--accent); }
+.tag-difficult { background: rgba(224,85,85,0.25); color: var(--red); }
+
+/* ─────────────────────────────────────────────
+   HOME VIEW
+───────────────────────────────────────────── */
+.hero-kanji {
+  background: linear-gradient(135deg, var(--ink) 0%, #1a1535 50%, #2d1f4a 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-kanji::before {
+  content: '漢字';
+  position: absolute;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 10rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.02);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+}
+.hero-title { font-size: 1.6rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.hero-sub { font-size: 0.85rem; color: var(--text2); margin-bottom: 16px; }
+.progress-overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.prog-item { background: var(--bg3); border-radius: 10px; padding: 10px 8px; text-align: center; border: 1px solid var(--border); }
+.prog-num { font-size: 1.4rem; font-weight: 800; color: var(--accent); font-family: 'Noto Serif JP', serif; }
+.prog-lbl { font-size: 0.6rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.quick-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.quick-btn:hover, .quick-btn:active { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.quick-icon { font-size: 1.6rem; }
+.quick-title { font-weight: 800; font-size: 0.85rem; color: var(--text); }
+.quick-sub { font-size: 0.7rem; color: var(--text3); }
+
+.daily-kanji-card {
+  background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.daily-kanji-card:hover { border-color: var(--accent); }
+.daily-char {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--accent2);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(240,192,112,0.3);
+  flex-shrink: 0;
+}
+.daily-info { flex: 1; min-width: 0; }
+.daily-meaning { font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.daily-tamil { font-size: 0.8rem; color: var(--accent); font-family: 'Noto Sans Tamil', sans-serif; margin-bottom: 6px; }
+.daily-readings { display: flex; gap: 8px; flex-wrap: wrap; }
+.reading-pill {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-family: 'Noto Serif JP', serif;
+  color: var(--text2);
+}
+.reading-pill.on { color: var(--blue); border-color: rgba(91,141,238,0.3); background: rgba(91,141,238,0.1); }
+.reading-pill.kun { color: var(--teal); border-color: rgba(61,189,184,0.3); background: rgba(61,189,184,0.1); }
+
+/* ─────────────────────────────────────────────
+   LESSON LIST VIEW
+───────────────────────────────────────────── */
+.lesson-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lesson-card:hover { border-color: var(--accent); transform: translateX(3px); }
+.lesson-num {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--ink), var(--card2));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--accent2);
+  flex-shrink: 0;
+}
+.lesson-info { flex: 1; min-width: 0; }
+.lesson-name { font-weight: 800; font-size: 0.9rem; margin-bottom: 3px; }
+.lesson-meta { font-size: 0.7rem; color: var(--text3); display: flex; gap: 10px; align-items: center; }
+.lesson-progress { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.lesson-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.5s ease; }
+.lesson-arrow { color: var(--text3); font-size: 1.1rem; }
+
+/* ─────────────────────────────────────────────
+   KANJI LIBRARY VIEW
+───────────────────────────────────────────── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 10px 16px;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+.search-bar:focus-within { border-color: var(--accent); }
+.search-bar input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 0;
+}
+.search-bar input::placeholder { color: var(--text3); }
+.search-icon { color: var(--text3); font-size: 1rem; }
+
+.filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; }
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.filter-chip.active { background: var(--accent); color: #1a1200; border-color: var(--accent); }
+
+.kanji-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (min-width: 480px) { .kanji-grid { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 768px) { .kanji-grid { grid-template-columns: repeat(7, 1fr); } }
+
+.kanji-tile {
+  aspect-ratio: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.kanji-tile:hover { border-color: var(--accent); transform: scale(1.05); z-index: 1; }
+.kanji-tile.status-known { border-color: rgba(76,175,125,0.4); background: rgba(76,175,125,0.05); }
+.kanji-tile.status-review { border-color: rgba(232,160,69,0.4); background: rgba(232,160,69,0.05); }
+.kanji-tile.status-difficult { border-color: rgba(224,85,85,0.4); background: rgba(224,85,85,0.05); }
+.tile-char {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.tile-mean { font-size: 0.45rem; color: var(--text3); margin-top: 3px; text-align: center; padding: 0 2px; line-height: 1.2; max-width: 100%; overflow: hidden; }
+.tile-status-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.status-known .tile-status-dot { background: var(--green); }
+.status-review .tile-status-dot { background: var(--accent); }
+.status-difficult .tile-status-dot { background: var(--red); }
+
+/* ─────────────────────────────────────────────
+   KANJI DETAIL MODAL
+───────────────────────────────────────────── */
+#kanji-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+#kanji-modal.open { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-sheet {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+  padding: 20px;
+  padding-bottom: 32px;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.modal-kanji-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.modal-kanji-char {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--accent2);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(240,192,112,0.2);
+  display: block;
+}
+.modal-kanji-top { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.modal-meaning-en { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+.modal-meaning-ta { font-size: 1rem; color: var(--accent); font-family: 'Noto Sans Tamil', sans-serif; margin: 4px 0 8px; }
+.modal-tamil-exp { font-size: 0.8rem; color: var(--text2); font-family: 'Noto Sans Tamil', sans-serif; line-height: 1.6; margin-bottom: 12px; }
+
+.readings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.reading-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.reading-type { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 800; }
+.on-type { color: var(--blue); }
+.kun-type { color: var(--teal); }
+.reading-value { font-family: 'Noto Serif JP', serif; font-size: 1rem; color: var(--text); }
+
+.examples-section { margin-bottom: 16px; }
+.example-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+.example-word { font-family: 'Noto Serif JP', serif; font-size: 1.1rem; color: var(--text); margin-bottom: 4px; }
+.example-reading { font-size: 0.72rem; color: var(--text3); margin-bottom: 4px; }
+.example-tamil { font-size: 0.8rem; color: var(--text2); font-family: 'Noto Sans Tamil', sans-serif; }
+
+.status-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.status-btn {
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 2px solid;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition: var(--transition);
+  text-align: center;
+}
+.status-btn.known { border-color: var(--green); color: var(--green); }
+.status-btn.review { border-color: var(--accent); color: var(--accent); }
+.status-btn.difficult { border-color: var(--red); color: var(--red); }
+.status-btn.active.known { background: var(--green); color: #fff; }
+.status-btn.active.review { background: var(--accent); color: #1a1200; }
+.status-btn.active.difficult { background: var(--red); color: #fff; }
+
+.modal-nav { display: flex; gap: 8px; }
+.modal-nav .btn { flex: 1; }
+
+/* ─────────────────────────────────────────────
+   LESSON DETAIL VIEW
+───────────────────────────────────────────── */
+.lesson-header {
+  background: linear-gradient(135deg, var(--ink), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.lesson-header-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+.lesson-header-sub { font-size: 0.8rem; color: var(--text2); margin-bottom: 12px; }
+.lesson-mode-tabs { display: flex; gap: 8px; justify-content: center; }
+.mode-tab {
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.mode-tab.active { background: var(--accent); color: #1a1200; border-color: var(--accent); }
+
+.study-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 30px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.study-card-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--accent2);
+  text-shadow: 0 0 40px rgba(240,192,112,0.2);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.study-card-meaning { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.study-card-tamil { font-size: 0.9rem; color: var(--accent); font-family: 'Noto Sans Tamil', sans-serif; margin-bottom: 12px; }
+.study-counter { font-size: 0.75rem; color: var(--text3); margin-bottom: 16px; }
+.study-nav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ─────────────────────────────────────────────
+   QUIZ / GAME VIEW
+───────────────────────────────────────────── */
+.game-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.game-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.game-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+.game-icon { font-size: 2rem; margin-bottom: 8px; }
+.game-name { font-weight: 800; font-size: 0.85rem; color: var(--text); margin-bottom: 4px; }
+.game-desc { font-size: 0.68rem; color: var(--text3); line-height: 1.4; }
+
+/* Quiz area */
+.quiz-area { display: none; }
+.quiz-area.active { display: block; }
+.quiz-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.quiz-back { background: none; border: none; color: var(--text2); font-size: 1.2rem; cursor: pointer; padding: 4px; }
+.quiz-title { font-weight: 800; font-size: 1rem; flex: 1; }
+.quiz-score { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+
+.quiz-question-card {
+  background: linear-gradient(135deg, var(--ink), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.quiz-q-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 12px; }
+.quiz-q-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--accent2);
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(240,192,112,0.2);
+  margin-bottom: 8px;
+}
+.quiz-q-hint { font-size: 0.78rem; color: var(--text3); }
+
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.quiz-option {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.4;
+}
+.quiz-option:hover { border-color: var(--accent2); background: var(--card2); }
+.quiz-option.correct { background: rgba(76,175,125,0.2); border-color: var(--green); color: var(--green); }
+.quiz-option.wrong { background: rgba(224,85,85,0.2); border-color: var(--red); color: var(--red); }
+.quiz-option.disabled { pointer-events: none; }
+
+.quiz-feedback {
+  text-align: center;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: rgba(76,175,125,0.15); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+.quiz-feedback.wrong-fb { background: rgba(224,85,85,0.15); color: var(--red); border: 1px solid rgba(224,85,85,0.3); }
+
+.quiz-progress-bar {
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Flashcard */
+.flashcard-wrap {
+  perspective: 1200px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.flashcard {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 20px;
+}
+.flashcard-front { background: linear-gradient(135deg, var(--ink), var(--card2)); }
+.flashcard-back { background: var(--card); transform: rotateY(180deg); }
+.flashcard-kanji-big {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 5.5rem;
+  font-weight: 900;
+  color: var(--accent2);
+  text-shadow: 0 0 50px rgba(240,192,112,0.25);
+}
+.flashcard-tap { font-size: 0.7rem; color: var(--text3); margin-top: 8px; }
+.flashcard-back-content { text-align: center; }
+.fb-meaning { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.fb-tamil { font-size: 0.9rem; color: var(--accent); font-family: 'Noto Sans Tamil', sans-serif; margin-bottom: 8px; }
+.fb-readings { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+.fc-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Matching game */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.match-item {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  font-weight: 700;
+}
+.match-item.selected { border-color: var(--accent); background: rgba(232,160,69,0.1); }
+.match-item.matched { border-color: var(--green); background: rgba(76,175,125,0.1); color: var(--green); pointer-events: none; }
+.match-item.wrong-flash { border-color: var(--red); background: rgba(224,85,85,0.1); animation: shake 0.4s ease; }
+.match-kanji-item { font-family: 'Noto Serif JP', serif; font-size: 1.6rem; color: var(--accent2); }
+.match-meaning-item { font-size: 0.75rem; color: var(--text2); }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ─────────────────────────────────────────────
+   WRITING PRACTICE VIEW
+───────────────────────────────────────────── */
+.write-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.write-kanji-info { flex: 1; }
+.write-kanji-title { font-family: 'Noto Serif JP', serif; font-size: 2rem; font-weight: 900; color: var(--accent2); }
+.write-meaning { font-size: 0.85rem; color: var(--text2); }
+
+.canvas-container {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.canvas-container canvas {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  touch-action: none;
+  cursor: crosshair;
+  background: #fafaf8;
+}
+.canvas-overlay-kanji {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(0,0,0,0.05);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.3s;
+  line-height: 1;
+}
+.canvas-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.canvas-controls .btn { flex: 1; min-width: 80px; }
+.show-hint-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text2); cursor: pointer; }
+
+.stroke-counter {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.write-selector {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding-bottom: 8px; margin-bottom: 12px;
+}
+.write-selector::-webkit-scrollbar { display: none; }
+.write-kanji-btn {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.3rem;
+  color: var(--text2);
+}
+.write-kanji-btn.active { border-color: var(--accent); color: var(--accent2); background: rgba(232,160,69,0.1); }
+.write-feedback {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 700;
+  min-height: 24px;
+  margin-bottom: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   PROGRESS VIEW
+───────────────────────────────────────────── */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+.stat-value { font-size: 2rem; font-weight: 800; font-family: 'Noto Serif JP', serif; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.progress-bar-item { margin-bottom: 14px; }
+.pb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.pb-label { font-size: 0.8rem; font-weight: 700; }
+.pb-value { font-size: 0.75rem; color: var(--text3); }
+.pb-track { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; }
+.pb-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
+
+.recent-activity { }
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.activity-text { flex: 1; font-size: 0.8rem; color: var(--text2); }
+.activity-text strong { color: var(--text); }
+.activity-time { font-size: 0.65rem; color: var(--text3); }
+
+/* ─────────────────────────────────────────────
+   SETTINGS VIEW
+───────────────────────────────────────────── */
+.settings-section { margin-bottom: 24px; }
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-info { }
+.setting-name { font-weight: 700; font-size: 0.9rem; }
+.setting-desc { font-size: 0.72rem; color: var(--text3); margin-top: 2px; }
+.toggle {
+  width: 44px; height: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); border-color: var(--accent); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  background: var(--text3);
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: var(--transition);
+}
+.toggle.on::after { background: #1a1200; left: 22px; }
+
+/* ─────────────────────────────────────────────
+   TOAST / NOTIFICATIONS
+───────────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  animation: toastIn 0.3s ease;
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+}
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── UTIL ── */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.text-center { text-align: center; }
+.gap-8 { gap: 8px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.color-green { color: var(--green); }
+.color-red { color: var(--red); }
+.color-accent { color: var(--accent); }
+.color-blue { color: var(--blue); }
+.font-jp { font-family: 'Noto Serif JP', serif; }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text3); }
+.empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-text { font-size: 0.9rem; }
+
+/* ── SCORE POPUP ── */
+.score-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.score-popup.open { display: flex; }
+.score-popup-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 24px;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  animation: popIn 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.score-big { font-size: 4rem; font-weight: 800; color: var(--accent2); font-family: 'Noto Serif JP', serif; margin: 12px 0; }
+.score-label { font-size: 0.8rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     HEADER
+═══════════════════════════════════ -->
+<header id="app-header">
+  <div class="app-logo">
+    漢字マスター
+    <span>KANJI MASTER — TAMIL</span>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-val" id="h-known">0</div>
+      <div class="hstat-lbl">Known</div>
+    </div>
+    <div class="streak-badge">
+      🔥 <span id="h-streak">0</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════
+     MAIN VIEWS
+═══════════════════════════════════ -->
+<main id="app-main">
+
+  <!-- ▶ HOME -->
+  <section class="view active" id="view-home">
+    <div class="hero-kanji">
+      <div class="hero-title">நல்வரவு 🎌</div>
+      <div class="hero-sub">Learn 1000 Kanji with Tamil meanings</div>
+      <div class="progress-overview">
+        <div class="prog-item"><div class="prog-num" id="stat-total">50</div><div class="prog-lbl">Total</div></div>
+        <div class="prog-item"><div class="prog-num color-green" id="stat-known">0</div><div class="prog-lbl">Known</div></div>
+        <div class="prog-item"><div class="prog-num color-accent" id="stat-review">0</div><div class="prog-lbl">Review</div></div>
+        <div class="prog-item"><div class="prog-num color-red" id="stat-diff">0</div><div class="prog-lbl">Hard</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">இன்றைய கஞ்சி — Kanji of the Day</div>
+    <div class="daily-kanji-card" id="daily-card" onclick="openKanjiModal(todayKanjiIndex)">
+      <div class="daily-char" id="daily-char">日</div>
+      <div class="daily-info">
+        <div class="daily-meaning" id="daily-meaning">Sun / Day</div>
+        <div class="daily-tamil" id="daily-tamil">சூரியன் / நாள்</div>
+        <div class="daily-readings">
+          <span class="reading-pill on" id="daily-on"></span>
+          <span class="reading-pill kun" id="daily-kun"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">விரைவு செயல்கள் — Quick Actions</div>
+    <div class="quick-actions">
+      <div class="quick-btn" onclick="navigate('lessons')">
+        <span class="quick-icon">📚</span>
+        <span class="quick-title">பாடங்கள்</span>
+        <span class="quick-sub">Structured lessons</span>
+      </div>
+      <div class="quick-btn" onclick="navigate('practice')">
+        <span class="quick-icon">✏️</span>
+        <span class="quick-title">எழுது பயிற்சி</span>
+        <span class="quick-sub">Writing practice</span>
+      </div>
+      <div class="quick-btn" onclick="startQuiz('flashcard')">
+        <span class="quick-icon">🃏</span>
+        <span class="quick-title">Flashcards</span>
+        <span class="quick-sub">Quick review cards</span>
+      </div>
+      <div class="quick-btn" onclick="startQuiz('mcq')">
+        <span class="quick-icon">🎯</span>
+        <span class="quick-title">வினாடி வினா</span>
+        <span class="quick-sub">Multiple choice quiz</span>
+      </div>
+    </div>
+
+    <div class="section-title">தொடர்ந்து படியுங்கள் — Continue Learning</div>
+    <div id="home-lessons"></div>
+  </section>
+
+  <!-- ▶ LIBRARY -->
+  <section class="view" id="view-library">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="lib-search" placeholder="கஞ்சி, படிப்பு, அல்லது தமிழ் பொருள் தேடு..." oninput="renderLibrary()">
+    </div>
+    <div class="filter-row" id="lib-filters"></div>
+    <div id="lib-count" class="mb-8" style="font-size:0.75rem;color:var(--text3)"></div>
+    <div class="kanji-grid" id="kanji-grid"></div>
+  </section>
+
+  <!-- ▶ LESSONS -->
+  <section class="view" id="view-lessons">
+    <div id="lessons-list-view">
+      <div class="section-title">பாட அமைப்பு — Lesson Modules</div>
+      <div id="lessons-list"></div>
+    </div>
+    <div id="lesson-detail-view" style="display:none"></div>
+  </section>
+
+  <!-- ▶ GAMES / QUIZ -->
+  <section class="view" id="view-games">
+    <div id="game-select-area">
+      <div class="section-title">விளையாட்டு & வினா — Games & Quizzes</div>
+      <div class="game-select">
+        <div class="game-card" onclick="startQuiz('mcq')">
+          <div class="game-icon">🎯</div>
+          <div class="game-name">அர்த்த வினா</div>
+          <div class="game-desc">Choose correct Tamil meaning for each kanji</div>
+        </div>
+        <div class="game-card" onclick="startQuiz('reading')">
+          <div class="game-icon">📖</div>
+          <div class="game-name">படிப்பு வினா</div>
+          <div class="game-desc">Identify Onyomi or Kunyomi reading</div>
+        </div>
+        <div class="game-card" onclick="startQuiz('match')">
+          <div class="game-icon">🔗</div>
+          <div class="game-name">பொருத்தம்</div>
+          <div class="game-desc">Match kanji with Tamil meanings</div>
+        </div>
+        <div class="game-card" onclick="startQuiz('flashcard')">
+          <div class="game-icon">🃏</div>
+          <div class="game-name">Flashcards</div>
+          <div class="game-desc">Flip cards — test yourself</div>
+        </div>
+      </div>
+      <div class="section-title">உங்கள் சாதனைகள் — Your Records</div>
+      <div id="best-scores"></div>
+    </div>
+    <!-- Quiz areas injected dynamically -->
+    <div id="quiz-mcq-area" class="quiz-area"></div>
+    <div id="quiz-reading-area" class="quiz-area"></div>
+    <div id="quiz-match-area" class="quiz-area"></div>
+    <div id="quiz-flashcard-area" class="quiz-area"></div>
+  </section>
+
+  <!-- ▶ WRITING PRACTICE -->
+  <section class="view" id="view-practice">
+    <div class="section-title">கஞ்சி எழுத்து பயிற்சி — Writing Practice</div>
+    <div class="write-selector" id="write-selector"></div>
+    <div class="write-header">
+      <div class="write-kanji-title font-jp" id="write-current-char">日</div>
+      <div class="write-kanji-info">
+        <div id="write-current-meaning" style="font-weight:800;font-size:0.9rem"></div>
+        <div class="write-meaning" id="write-current-tamil"></div>
+        <div id="write-current-readings" style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+    <div class="canvas-container">
+      <canvas id="writing-canvas"></canvas>
+      <div class="canvas-overlay-kanji" id="canvas-hint"></div>
+    </div>
+    <div class="stroke-counter">Strokes drawn: <span id="stroke-count">0</span></div>
+    <div class="write-feedback" id="write-feedback"></div>
+    <div class="canvas-controls">
+      <button class="btn btn-ghost btn-sm" onclick="clearCanvas()">🗑️ Clear</button>
+      <button class="btn btn-ghost btn-sm" onclick="undoStroke()">↩️ Undo</button>
+      <button class="btn btn-ghost btn-sm" onclick="toggleHint()">💡 Hint</button>
+      <button class="btn btn-primary btn-sm" onclick="writingDone()">✅ Done</button>
+    </div>
+    <div class="section-title">Stroke Tips</div>
+    <div class="card card-sm" id="stroke-tips">
+      <div style="font-size:0.8rem;color:var(--text2);line-height:1.7">
+        ✍️ <strong>Basic stroke rules:</strong><br>
+        1. Generally left → right, top → bottom<br>
+        2. Horizontal strokes before vertical (when crossing)<br>
+        3. Outside frame before inside content<br>
+        4. Center before sides in symmetric kanji<br>
+        💡 Tap <strong>Hint</strong> to see the faint guide character
+      </div>
+    </div>
+  </section>
+
+  <!-- ▶ PROGRESS -->
+  <section class="view" id="view-progress">
+    <div class="section-title">உங்கள் முன்னேற்றம் — Your Progress</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value color-accent" id="pg-known">0</div>
+        <div class="stat-label">Known 知っている</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--accent2)" id="pg-streak">0</div>
+        <div class="stat-label">Day Streak 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value color-red" id="pg-diff">0</div>
+        <div class="stat-label">Difficult 難しい</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--blue)" id="pg-quiz">0</div>
+        <div class="stat-label">Quizzes Done</div>
+      </div>
+    </div>
+
+    <div class="section-title">JLPT நிலை முன்னேற்றம் — Level Progress</div>
+    <div class="card">
+      <div id="jlpt-progress"></div>
+    </div>
+
+    <div class="section-title">சமீபத்திய செயல்பாடு — Recent Activity</div>
+    <div class="card">
+      <div id="recent-activity"></div>
+    </div>
+  </section>
+
+  <!-- ▶ SETTINGS -->
+  <section class="view" id="view-settings">
+    <div class="section-title">அமைப்புகள் — Settings</div>
+    <div class="card">
+      <div class="settings-section">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Furigana எப்போதும் காட்டு</div>
+            <div class="setting-desc">Always show readings above kanji</div>
+          </div>
+          <div class="toggle" id="toggle-furigana" onclick="toggleSetting('furigana')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Writing Hint ஆட்டோ காட்டு</div>
+            <div class="setting-desc">Automatically show kanji hint on canvas</div>
+          </div>
+          <div class="toggle on" id="toggle-hint" onclick="toggleSetting('hint')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Sound Effects</div>
+            <div class="setting-desc">Play sound on correct/incorrect answers</div>
+          </div>
+          <div class="toggle" id="toggle-sound" onclick="toggleSetting('sound')"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">தரவு — Data</div>
+    <div class="card">
+      <div class="settings-section">
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Export Progress</div>
+            <div class="setting-desc">Download your study data</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="exportData()">Export</button>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name color-red">Reset All Progress</div>
+            <div class="setting-desc">Clear all stored data (cannot undo)</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="resetData()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">பயன்பாட்டு பற்றி — About</div>
+    <div class="card card-sm text-center" style="color:var(--text3);font-size:0.78rem;line-height:1.8">
+      <div style="font-size:1.5rem;margin-bottom:8px">漢字マスター</div>
+      <strong style="color:var(--text)">Kanji Master Tamil v1.0</strong><br>
+      1000 Essential Kanji with Tamil Meanings<br>
+      Designed for Tamil-speaking Japanese learners<br>
+      <span style="color:var(--accent)">தமிழரின் ஜப்பானிய மொழி கற்றல் தளம்</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════
+     BOTTOM NAVIGATION
+═══════════════════════════════════ -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" onclick="navigate('home')" data-view="home">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">Home</span>
+  </button>
+  <button class="nav-btn" onclick="navigate('library')" data-view="library">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">Library</span>
+  </button>
+  <button class="nav-btn" onclick="navigate('lessons')" data-view="lessons">
+    <span class="nav-icon">🎓</span>
+    <span class="nav-label">Lessons</span>
+  </button>
+  <button class="nav-btn" onclick="navigate('games')" data-view="games">
+    <span class="nav-icon">🎮</span>
+    <span class="nav-label">Games</span>
+  </button>
+  <button class="nav-btn" onclick="navigate('practice')" data-view="practice">
+    <span class="nav-icon">✏️</span>
+    <span class="nav-label">Write</span>
+  </button>
+  <button class="nav-btn" onclick="navigate('progress')" data-view="progress">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Progress</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════
+     KANJI DETAIL MODAL
+═══════════════════════════════════ -->
+<div id="kanji-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet" id="modal-content">
+    <div class="modal-handle"></div>
+    <!-- content injected by JS -->
+  </div>
+</div>
+
+<!-- Score Popup -->
+<div class="score-popup" id="score-popup">
+  <div class="score-popup-card">
+    <div id="sp-emoji" style="font-size:2.5rem">🎉</div>
+    <div class="score-label">Quiz Complete!</div>
+    <div class="score-big" id="sp-score">8/10</div>
+    <div id="sp-msg" style="font-size:0.85rem;color:var(--text2);margin-bottom:20px"></div>
+    <button class="btn btn-primary btn-block" onclick="closeScorePopup()">தொடர் — Continue</button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
+// ============================================================
+// KANJI DATA STRUCTURE
+// Each kanji object contains:
+//   char: the kanji character
+//   onyomi: Chinese-origin readings (array)
+//   kunyomi: Japanese-origin readings (array)
+//   meaning: English meaning
+//   tamil: Tamil meaning
+//   tamilExp: Tamil explanation
+//   examples: array of {word, reading, tamil}
+//   jlpt: JLPT level (N5-N1)
+//   strokes: stroke count
+//   lesson: lesson number (1-based)
+//
+// TO ADD MORE KANJI: extend the KANJI array below
+// ============================================================
+
+const KANJI = [
+  // ─── LESSON 1: Basic Elements ───────────────────────────
+  { char:"日", onyomi:["ニチ","ジツ"], kunyomi:["ひ","か"], meaning:"Sun / Day", tamil:"சூரியன் / நாள்", tamilExp:"சூரியன் அல்லது ஒரு நாளை குறிக்கும். 'நாளை' என்னும் வார்த்தையிலும் இது வரும்.", examples:[{word:"日本",reading:"にほん",tamil:"ஜப்பான்"},{word:"毎日",reading:"まいにち",tamil:"தினமும்"}], jlpt:"N5", strokes:4, lesson:1 },
+  { char:"月", onyomi:["ゲツ","ガツ"], kunyomi:["つき"], meaning:"Moon / Month", tamil:"நிலவு / மாதம்", tamilExp:"நிலவை அல்லது ஒரு மாதத்தை குறிக்கும்.", examples:[{word:"月曜日",reading:"げつようび",tamil:"திங்கட்கிழமை"},{word:"三月",reading:"さんがつ",tamil:"மார்ச் மாதம்"}], jlpt:"N5", strokes:4, lesson:1 },
+  { char:"火", onyomi:["カ"], kunyomi:["ひ"], meaning:"Fire", tamil:"நெருப்பு", tamilExp:"நெருப்பை குறிக்கும் கஞ்சி. செவ்வாய் கிழமையிலும் இது வரும்.", examples:[{word:"火曜日",reading:"かようび",tamil:"செவ்வாய்"},{word:"火山",reading:"かざん",tamil:"எரிமலை"}], jlpt:"N5", strokes:4, lesson:1 },
+  { char:"水", onyomi:["スイ"], kunyomi:["みず"], meaning:"Water", tamil:"நீர் / தண்ணீர்", tamilExp:"நீரை குறிக்கும். புதன் கிழமைக்கும் இந்த கஞ்சி பயன்படுத்தப்படும்.", examples:[{word:"水曜日",reading:"すいようび",tamil:"புதன்"},{word:"水泳",reading:"すいえい",tamil:"நீச்சல்"}], jlpt:"N5", strokes:4, lesson:1 },
+  { char:"木", onyomi:["モク","ボク"], kunyomi:["き","こ"], meaning:"Tree / Wood", tamil:"மரம் / மரத்தாலான", tamilExp:"மரம் அல்லது மரப்பொருட்களை குறிக்கும்.", examples:[{word:"木曜日",reading:"もくようび",tamil:"வியாழன்"},{word:"木材",reading:"もくざい",tamil:"மரக்கட்டை"}], jlpt:"N5", strokes:4, lesson:1 },
+  { char:"金", onyomi:["キン","コン"], kunyomi:["かね","かな"], meaning:"Gold / Money / Friday", tamil:"தங்கம் / பணம்", tamilExp:"தங்கம் அல்லது பணத்தை குறிக்கும். வெள்ளிக்கிழமையின் வார்த்தையிலும் உள்ளது.", examples:[{word:"金曜日",reading:"きんようび",tamil:"வெள்ளி"},{word:"お金",reading:"おかね",tamil:"பணம்"}], jlpt:"N5", strokes:8, lesson:1 },
+  { char:"土", onyomi:["ド","ト"], kunyomi:["つち"], meaning:"Earth / Soil / Saturday", tamil:"மண் / பூமி", tamilExp:"மண் அல்லது பூமியை குறிக்கும். சனிக்கிழமையிலும் இது வரும்.", examples:[{word:"土曜日",reading:"どようび",tamil:"சனி"},{word:"土地",reading:"とち",tamil:"நிலம்"}], jlpt:"N5", strokes:3, lesson:1 },
+
+  // ─── LESSON 2: Numbers ───────────────────────────────────
+  { char:"一", onyomi:["イチ","イツ"], kunyomi:["ひと(つ)"], meaning:"One", tamil:"ஒன்று (1)", tamilExp:"எண் ஒன்றை குறிக்கும் கஞ்சி. மிக எளிமையான கஞ்சி.", examples:[{word:"一つ",reading:"ひとつ",tamil:"ஒரு பொருள்"},{word:"一月",reading:"いちがつ",tamil:"ஜனவரி"}], jlpt:"N5", strokes:1, lesson:2 },
+  { char:"二", onyomi:["ニ"], kunyomi:["ふた(つ)"], meaning:"Two", tamil:"இரண்டு (2)", tamilExp:"எண் இரண்டை குறிக்கும் கஞ்சி.", examples:[{word:"二つ",reading:"ふたつ",tamil:"இரண்டு பொருட்கள்"},{word:"二月",reading:"にがつ",tamil:"பிப்ரவரி"}], jlpt:"N5", strokes:2, lesson:2 },
+  { char:"三", onyomi:["サン"], kunyomi:["み(つ)","みっ(つ)"], meaning:"Three", tamil:"மூன்று (3)", tamilExp:"எண் மூன்றை குறிக்கும் கஞ்சி.", examples:[{word:"三つ",reading:"みっつ",tamil:"மூன்று பொருட்கள்"},{word:"三月",reading:"さんがつ",tamil:"மார்ச்"}], jlpt:"N5", strokes:3, lesson:2 },
+  { char:"四", onyomi:["シ"], kunyomi:["よ(つ)","よん"], meaning:"Four", tamil:"நான்கு (4)", tamilExp:"எண் நான்கை குறிக்கும். ஜப்பானில் 4 எண்ணை சில நேரங்களில் தவிர்க்கிறார்கள்.", examples:[{word:"四つ",reading:"よっつ",tamil:"நான்கு பொருட்கள்"},{word:"四月",reading:"しがつ",tamil:"ஏப்ரல்"}], jlpt:"N5", strokes:5, lesson:2 },
+  { char:"五", onyomi:["ゴ"], kunyomi:["いつ(つ)"], meaning:"Five", tamil:"ஐந்து (5)", tamilExp:"எண் ஐந்தை குறிக்கும் கஞ்சி.", examples:[{word:"五つ",reading:"いつつ",tamil:"ஐந்து பொருட்கள்"},{word:"五月",reading:"ごがつ",tamil:"மே"}], jlpt:"N5", strokes:4, lesson:2 },
+  { char:"百", onyomi:["ヒャク"], kunyomi:[], meaning:"Hundred", tamil:"நூறு (100)", tamilExp:"நூற்று என்ற எண்ணை குறிக்கும் கஞ்சி.", examples:[{word:"百円",reading:"ひゃくえん",tamil:"100 யென்"},{word:"数百",reading:"すうひゃく",tamil:"பல நூறு"}], jlpt:"N5", strokes:6, lesson:2 },
+  { char:"千", onyomi:["セン"], kunyomi:["ち"], meaning:"Thousand", tamil:"ஆயிரம் (1000)", tamilExp:"ஆயிரம் என்ற எண்ணை குறிக்கும் கஞ்சி.", examples:[{word:"千円",reading:"せんえん",tamil:"1000 யென்"},{word:"千年",reading:"せんねん",tamil:"ஆயிரம் ஆண்டுகள்"}], jlpt:"N5", strokes:3, lesson:2 },
+
+  // ─── LESSON 3: People & Directions ──────────────────────
+  { char:"人", onyomi:["ジン","ニン"], kunyomi:["ひと"], meaning:"Person / Human", tamil:"மனிதன் / நபர்", tamilExp:"மனிதனை குறிக்கும். நிற்கும் மனிதனின் சிலுவை வடிவில் உள்ளது.", examples:[{word:"人間",reading:"にんげん",tamil:"மனித இனம்"},{word:"外国人",reading:"がいこくじん",tamil:"வெளிநாட்டினர்"}], jlpt:"N5", strokes:2, lesson:3 },
+  { char:"山", onyomi:["サン"], kunyomi:["やま"], meaning:"Mountain", tamil:"மலை", tamilExp:"மலையை குறிக்கும் கஞ்சி. மூன்று சிகரங்களை போல் தோற்றமளிக்கும்.", examples:[{word:"富士山",reading:"ふじさん",tamil:"ஃபுஜி மலை"},{word:"山道",reading:"やまみち",tamil:"மலை வழி"}], jlpt:"N5", strokes:3, lesson:3 },
+  { char:"川", onyomi:["セン"], kunyomi:["かわ"], meaning:"River", tamil:"நதி / ஆறு", tamilExp:"நதியை குறிக்கும். மூன்று நீர் வரிகளை போல் தோற்றமளிக்கும்.", examples:[{word:"川岸",reading:"かわぎし",tamil:"நதிக்கரை"},{word:"大川",reading:"おおかわ",tamil:"பெரிய ஆறு"}], jlpt:"N5", strokes:3, lesson:3 },
+  { char:"上", onyomi:["ジョウ","ショウ"], kunyomi:["うえ","うわ","かみ"], meaning:"Up / Above / On top", tamil:"மேல் / மேலே", tamilExp:"மேல் திசையை அல்லது ஒன்றின் மேலே இருப்பதை குறிக்கும்.", examples:[{word:"上手",reading:"じょうず",tamil:"திறமையான"},{word:"上がる",reading:"あがる",tamil:"மேலே செல்வது"}], jlpt:"N5", strokes:3, lesson:3 },
+  { char:"下", onyomi:["カ","ゲ"], kunyomi:["した","しも","くだ(す)"], meaning:"Down / Below / Under", tamil:"கீழ் / கீழே", tamilExp:"கீழ் திசையை அல்லது ஒன்றின் கீழே இருப்பதை குறிக்கும்.", examples:[{word:"地下",reading:"ちか",tamil:"நிலத்தின் கீழ்"},{word:"下がる",reading:"さがる",tamil:"கீழே செல்வது"}], jlpt:"N5", strokes:3, lesson:3 },
+  { char:"大", onyomi:["ダイ","タイ"], kunyomi:["おお(きい)"], meaning:"Big / Large / Great", tamil:"பெரிய / பெரிது", tamilExp:"பெரிய அல்லது பிரமாண்டமான என்று பொருள் தரும்.", examples:[{word:"大学",reading:"だいがく",tamil:"பல்கலைக்கழகம்"},{word:"大切",reading:"たいせつ",tamil:"முக்கியமான"}], jlpt:"N5", strokes:3, lesson:3 },
+  { char:"小", onyomi:["ショウ"], kunyomi:["ちい(さい)","こ","お"], meaning:"Small / Little", tamil:"சிறிய / சின்ன", tamilExp:"சிறிய அல்லது குறைவான என்று பொருள் தரும்.", examples:[{word:"小学校",reading:"しょうがっこう",tamil:"தொடக்கப்பள்ளி"},{word:"小さい",reading:"ちいさい",tamil:"சிறியது"}], jlpt:"N5", strokes:3, lesson:3 },
+
+  // ─── LESSON 4: Nature & Time ─────────────────────────────
+  { char:"年", onyomi:["ネン"], kunyomi:["とし"], meaning:"Year", tamil:"ஆண்டு / வருடம்", tamilExp:"ஒரு வருடத்தை குறிக்கும் கஞ்சி.", examples:[{word:"今年",reading:"ことし",tamil:"இந்த வருடம்"},{word:"来年",reading:"らいねん",tamil:"அடுத்த வருடம்"}], jlpt:"N5", strokes:6, lesson:4 },
+  { char:"時", onyomi:["ジ"], kunyomi:["とき"], meaning:"Time / Hour / Occasion", tamil:"நேரம் / மணி", tamilExp:"நேரம் அல்லது ஒரு குறிப்பிட்ட நேரத்தை குறிக்கும்.", examples:[{word:"時間",reading:"じかん",tamil:"நேரம் (duration)"},{word:"何時",reading:"なんじ",tamil:"எத்தனை மணி?"}], jlpt:"N5", strokes:10, lesson:4 },
+  { char:"分", onyomi:["ブン","フン"], kunyomi:["わ(かる)","わ(ける)"], meaning:"Minute / Part / Understand", tamil:"நிமிடம் / பகுதி / புரிதல்", tamilExp:"நிமிடம், பகுப்பு அல்லது புரிந்துகொள்வது என்று பல பொருள் தரும்.", examples:[{word:"五分",reading:"ごふん",tamil:"ஐந்து நிமிடங்கள்"},{word:"分かる",reading:"わかる",tamil:"புரிகிறது"}], jlpt:"N5", strokes:4, lesson:4 },
+  { char:"今", onyomi:["コン","キン"], kunyomi:["いま"], meaning:"Now / Present", tamil:"இப்போது / தற்போது", tamilExp:"இப்போது அல்லது தற்போதைய என்று பொருள் தரும்.", examples:[{word:"今日",reading:"きょう",tamil:"இன்று"},{word:"今週",reading:"こんしゅう",tamil:"இந்த வாரம்"}], jlpt:"N5", strokes:4, lesson:4 },
+  { char:"先", onyomi:["セン"], kunyomi:["さき","ま(ず)"], meaning:"Ahead / Previous / First", tamil:"முன்னால் / முதலில்", tamilExp:"முன்னால் அல்லது முன்பு என்று பொருள் தரும்.", examples:[{word:"先生",reading:"せんせい",tamil:"ஆசிரியர்"},{word:"先週",reading:"せんしゅう",tamil:"கடந்த வாரம்"}], jlpt:"N5", strokes:6, lesson:4 },
+
+  // ─── LESSON 5: School & Study ───────────────────────────
+  { char:"学", onyomi:["ガク"], kunyomi:["まな(ぶ)"], meaning:"Study / Learn / School", tamil:"படித்தல் / கற்றல் / பள்ளி", tamilExp:"படிப்பு அல்லது கற்றல் என்று பொருள் தரும்.", examples:[{word:"大学",reading:"だいがく",tamil:"பல்கலைக்கழகம்"},{word:"学生",reading:"がくせい",tamil:"மாணவர்"}], jlpt:"N5", strokes:8, lesson:5 },
+  { char:"校", onyomi:["コウ"], kunyomi:[], meaning:"School", tamil:"பள்ளி / கல்வி நிறுவனம்", tamilExp:"பள்ளி அல்லது கல்வி நிறுவனத்தை குறிக்கும்.", examples:[{word:"学校",reading:"がっこう",tamil:"பள்ளி"},{word:"高校",reading:"こうこう",tamil:"உயர்நிலைப் பள்ளி"}], jlpt:"N5", strokes:10, lesson:5 },
+  { char:"生", onyomi:["セイ","ショウ"], kunyomi:["い(きる)","う(まれる)","なま"], meaning:"Life / Birth / Live / Raw", tamil:"வாழ்க்கை / பிறப்பு / கச்சாமான", tamilExp:"வாழ்க்கை, பிறப்பு அல்லது கச்சா என்று பல பொருள்.", examples:[{word:"学生",reading:"がくせい",tamil:"மாணவர்"},{word:"誕生日",reading:"たんじょうび",tamil:"பிறந்தநாள்"}], jlpt:"N5", strokes:5, lesson:5 },
+  { char:"語", onyomi:["ゴ"], kunyomi:["かた(る)","かた(らう)"], meaning:"Language / Word / Story", tamil:"மொழி / வார்த்தை / கதை", tamilExp:"மொழி அல்லது வார்த்தையை குறிக்கும். ஜப்பானிய மொழியில் 'மொழி' என்று சொல்ல '語' பயன்படுத்தப்படும்.", examples:[{word:"日本語",reading:"にほんご",tamil:"ஜப்பானிய மொழி"},{word:"英語",reading:"えいご",tamil:"ஆங்கிலம்"}], jlpt:"N5", strokes:14, lesson:5 },
+  { char:"読", onyomi:["ドク","トク"], kunyomi:["よ(む)"], meaning:"Read", tamil:"படிக்கவது / வாசிப்பது", tamilExp:"படிப்பது அல்லது வாசிப்பது என்று பொருள்.", examples:[{word:"読書",reading:"どくしょ",tamil:"புத்தக வாசிப்பு"},{word:"読む",reading:"よむ",tamil:"படிக்கிறேன்"}], jlpt:"N5", strokes:14, lesson:5 },
+  { char:"書", onyomi:["ショ"], kunyomi:["か(く)"], meaning:"Write / Book", tamil:"எழுதுவது / புத்தகம்", tamilExp:"எழுதுவது அல்லது புத்தகத்தை குறிக்கும்.", examples:[{word:"教科書",reading:"きょうかしょ",tamil:"பாடப்புத்தகம்"},{word:"書く",reading:"かく",tamil:"எழுகிறேன்"}], jlpt:"N5", strokes:10, lesson:5 },
+
+  // ─── LESSON 6: Family ───────────────────────────────────
+  { char:"父", onyomi:["フ"], kunyomi:["ちち"], meaning:"Father", tamil:"தந்தை / அப்பா", tamilExp:"தந்தையை குறிக்கும் கஞ்சி. சொந்தமான தந்தைக்கு 'ちち' பயன்படுத்துவோம்.", examples:[{word:"父親",reading:"ちちおや",tamil:"தந்தை"},{word:"お父さん",reading:"おとうさん",tamil:"அப்பா (மரியாதை)"}], jlpt:"N5", strokes:4, lesson:6 },
+  { char:"母", onyomi:["ボ"], kunyomi:["はは"], meaning:"Mother", tamil:"தாய் / அம்மா", tamilExp:"தாயை குறிக்கும் கஞ்சி. 'はは' சொந்தத் தாயை குறிக்கும்.", examples:[{word:"母親",reading:"ははおや",tamil:"தாய்"},{word:"お母さん",reading:"おかあさん",tamil:"அம்மா (மரியாதை)"}], jlpt:"N5", strokes:5, lesson:6 },
+  { char:"子", onyomi:["シ","ス"], kunyomi:["こ","ね"], meaning:"Child / Son", tamil:"குழந்தை / மகன்", tamilExp:"குழந்தை அல்லது மகனை குறிக்கும் கஞ்சி.", examples:[{word:"子供",reading:"こども",tamil:"குழந்தை"},{word:"男の子",reading:"おとこのこ",tamil:"ஆண் குழந்தை"}], jlpt:"N5", strokes:3, lesson:6 },
+  { char:"女", onyomi:["ジョ","ニョ"], kunyomi:["おんな","め"], meaning:"Woman / Female", tamil:"பெண் / பெண்மை", tamilExp:"பெண்ணை அல்லது பெண் தன்மையை குறிக்கும்.", examples:[{word:"女性",reading:"じょせい",tamil:"பெண்"},{word:"女の子",reading:"おんなのこ",tamil:"பெண் குழந்தை"}], jlpt:"N5", strokes:3, lesson:6 },
+  { char:"男", onyomi:["ダン","ナン"], kunyomi:["おとこ"], meaning:"Man / Male", tamil:"ஆண் / ஆண்மை", tamilExp:"ஆணை அல்லது ஆண் தன்மையை குறிக்கும்.", examples:[{word:"男性",reading:"だんせい",tamil:"ஆண்"},{word:"男の子",reading:"おとこのこ",tamil:"ஆண் குழந்தை"}], jlpt:"N5", strokes:7, lesson:6 },
+
+  // ─── LESSON 7: Common Verbs & Actions ───────────────────
+  { char:"食", onyomi:["ショク","ジキ"], kunyomi:["た(べる)","く(う)"], meaning:"Eat / Food", tamil:"சாப்பிடுவது / உணவு", tamilExp:"சாப்பிடுவது அல்லது உணவை குறிக்கும் கஞ்சி.", examples:[{word:"食事",reading:"しょくじ",tamil:"உணவு நேரம்"},{word:"食べる",reading:"たべる",tamil:"சாப்பிடுகிறேன்"}], jlpt:"N5", strokes:9, lesson:7 },
+  { char:"飲", onyomi:["イン"], kunyomi:["の(む)"], meaning:"Drink", tamil:"குடிப்பது / பருகுவது", tamilExp:"திரவத்தை குடிப்பதை குறிக்கும் கஞ்சி.", examples:[{word:"飲み物",reading:"のみもの",tamil:"பானம்"},{word:"飲む",reading:"のむ",tamil:"குடிக்கிறேன்"}], jlpt:"N5", strokes:12, lesson:7 },
+  { char:"見", onyomi:["ケン"], kunyomi:["み(る)","み(せる)","み(える)"], meaning:"See / Look / Watch", tamil:"பார்ப்பது / பார்க்கவது", tamilExp:"பார்ப்பது, கவனிப்பது என்று பொருள் தரும்.", examples:[{word:"見学",reading:"けんがく",tamil:"கண்ணிப்பு பயணம்"},{word:"見る",reading:"みる",tamil:"பார்க்கிறேன்"}], jlpt:"N5", strokes:7, lesson:7 },
+  { char:"聞", onyomi:["ブン","モン"], kunyomi:["き(く)","き(こえる)"], meaning:"Listen / Hear / Ask", tamil:"கேட்பது / கேட்கவது", tamilExp:"கேட்பது, கேட்கவது என்று பொருள் தரும்.", examples:[{word:"新聞",reading:"しんぶん",tamil:"செய்தித்தாள்"},{word:"聞く",reading:"きく",tamil:"கேட்கிறேன்"}], jlpt:"N5", strokes:14, lesson:7 },
+  { char:"行", onyomi:["コウ","ギョウ","アン"], kunyomi:["い(く)","ゆ(く)","おこな(う)"], meaning:"Go / Conduct", tamil:"போவது / செல்வது", tamilExp:"போவது, செல்வது என்று பொருள் தரும். நடத்துவது என்றும் பொருள்.", examples:[{word:"銀行",reading:"ぎんこう",tamil:"வங்கி"},{word:"行く",reading:"いく",tamil:"போகிறேன்"}], jlpt:"N5", strokes:6, lesson:7 },
+
+  // ─── LESSON 8: N4 Kanji ──────────────────────────────────
+  { char:"国", onyomi:["コク"], kunyomi:["くに"], meaning:"Country / Nation", tamil:"நாடு / தேசம்", tamilExp:"நாடு அல்லது நாட்டை குறிக்கும். சதுரத்தை போல் தோற்றமளிக்கும்.", examples:[{word:"外国",reading:"がいこく",tamil:"வெளிநாடு"},{word:"国語",reading:"こくご",tamil:"தேசிய மொழி"}], jlpt:"N4", strokes:8, lesson:8 },
+  { char:"話", onyomi:["ワ"], kunyomi:["はな(す)","はなし"], meaning:"Talk / Story / Speak", tamil:"பேசுவது / கதை / உரையாடல்", tamilExp:"பேசுவது அல்லது கதை சொல்வது என்று பொருள்.", examples:[{word:"電話",reading:"でんわ",tamil:"தொலைபேசி"},{word:"話す",reading:"はなす",tamil:"பேசுகிறேன்"}], jlpt:"N5", strokes:13, lesson:8 },
+  { char:"道", onyomi:["ドウ","トウ"], kunyomi:["みち"], meaning:"Road / Path / Way", tamil:"வழி / பாதை / சாலை", tamilExp:"சாலை, பாதை அல்லது வழிமுறையை குறிக்கும்.", examples:[{word:"道路",reading:"どうろ",tamil:"சாலை"},{word:"北海道",reading:"ほっかいどう",tamil:"ஹொக்கைதோ"}], jlpt:"N4", strokes:12, lesson:8 },
+  { char:"電", onyomi:["デン"], kunyomi:[], meaning:"Electricity / Electric", tamil:"மின்சாரம் / மின்னல்", tamilExp:"மின்சாரம் அல்லது மின்னலை குறிக்கும்.", examples:[{word:"電車",reading:"でんしゃ",tamil:"மின் ரயில்"},{word:"電話",reading:"でんわ",tamil:"தொலைபேசி"}], jlpt:"N4", strokes:13, lesson:8 },
+  { char:"車", onyomi:["シャ"], kunyomi:["くるま"], meaning:"Car / Vehicle / Wheel", tamil:"வண்டி / கார் / சக்கரம்", tamilExp:"வண்டி அல்லது கார்களை குறிக்கும். சக்கரத்தின் வடிவம் கொண்டது.", examples:[{word:"自動車",reading:"じどうしゃ",tamil:"கார்"},{word:"電車",reading:"でんしゃ",tamil:"மின் ரயில்"}], jlpt:"N5", strokes:7, lesson:8 },
+  { char:"駅", onyomi:["エキ"], kunyomi:[], meaning:"Station (train)", tamil:"இரயில் நிலையம்", tamilExp:"இரயில் அல்லது மெட்ரோ நிலையத்தை குறிக்கும்.", examples:[{word:"駅前",reading:"えきまえ",tamil:"நிலையத்தின் முன்"},{word:"東京駅",reading:"とうきょうえき",tamil:"டோக்கியோ ஸ்டேஷன்"}], jlpt:"N5", strokes:14, lesson:8 },
+];
+
+// ============================================================
+// LESSON MODULES CONFIGURATION
+// Add/modify lessons here. Each has an id, name, topic, and
+// kanji range (indices into KANJI array)
+// ============================================================
+const LESSONS = [
+  { id:1, name:"இயற்கை அடிப்படைகள்", nameEn:"Basic Elements", topic:"Days & Elements", kanjiRange:[0,6], color:"#e8a045" },
+  { id:2, name:"எண்கள்", nameEn:"Numbers", topic:"Numbers 1-1000", kanjiRange:[7,13], color:"#5b8dee" },
+  { id:3, name:"மக்கள் & திசைகள்", nameEn:"People & Directions", topic:"People, Nature, Directions", kanjiRange:[14,20], color:"#4caf7d" },
+  { id:4, name:"நேரம் & காலம்", nameEn:"Time & Calendar", topic:"Time expressions", kanjiRange:[21,25], color:"#9b6ee8" },
+  { id:5, name:"பள்ளி & படிப்பு", nameEn:"School & Study", topic:"Education vocabulary", kanjiRange:[26,31], color:"#e86ea8" },
+  { id:6, name:"குடும்பம்", nameEn:"Family", topic:"Family members", kanjiRange:[32,36], color:"#3dbdb8" },
+  { id:7, name:"செயல்கள்", nameEn:"Common Actions", topic:"Verbs & actions", kanjiRange:[37,41], color:"#e05555" },
+  { id:8, name:"N4 அடிப்படைகள்", nameEn:"N4 Essentials", topic:"Useful N4 kanji", kanjiRange:[42,47], color:"#f0c070" },
+];
+
+// ============================================================
+// APP STATE & localStorage
+// ============================================================
+let state = {
+  kanjiStatus: {},    // { charIndex: 'known'|'review'|'difficult' }
+  quizScores: {},     // { quizType: bestScore }
+  quizCount: 0,
+  streak: 0,
+  lastStudyDate: null,
+  settings: { furigana: false, hint: true, sound: false },
+  recentActivity: [],
+  lessonProgress: {}, // { lessonId: percent }
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('kanjiMasterState');
+    if (s) state = { ...state, ...JSON.parse(s) };
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem('kanjiMasterState', JSON.stringify(state)); } catch(e) {}
+}
+
+function getKanjiStatus(idx) { return state.kanjiStatus[idx] || 'none'; }
+function setKanjiStatus(idx, status) {
+  state.kanjiStatus[idx] = status;
+  updateStreakAndStats();
+  saveState();
+  updateHeaderStats();
+}
+
+function updateStreakAndStats() {
+  const today = new Date().toDateString();
+  if (state.lastStudyDate !== today) {
+    state.streak = (state.lastStudyDate === new Date(Date.now()-86400000).toDateString()) ? state.streak + 1 : 1;
+    state.lastStudyDate = today;
+  }
+}
+
+function addActivity(text) {
+  state.recentActivity.unshift({ text, time: Date.now() });
+  if (state.recentActivity.length > 20) state.recentActivity.pop();
+  saveState();
+}
+
+function getStatusCounts() {
+  let known = 0, review = 0, diff = 0;
+  Object.values(state.kanjiStatus).forEach(s => {
+    if (s === 'known') known++;
+    else if (s === 'review') review++;
+    else if (s === 'difficult') diff++;
+  });
+  return { known, review, diff };
+}
+
+function updateHeaderStats() {
+  const { known } = getStatusCounts();
+  document.getElementById('h-known').textContent = known;
+  document.getElementById('h-streak').textContent = state.streak;
+  const s = getStatusCounts();
+  const si = id => document.getElementById(id);
+  if (si('stat-known')) si('stat-known').textContent = s.known;
+  if (si('stat-review')) si('stat-review').textContent = s.review;
+  if (si('stat-diff')) si('stat-diff').textContent = s.diff;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+let currentView = 'home';
+
+function navigate(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelector(`[data-view="${view}"]`).classList.add('active');
+  currentView = view;
+  // Re-render on navigate
+  if (view === 'library') renderLibrary();
+  if (view === 'progress') renderProgress();
+  if (view === 'lessons') renderLessonsList();
+  if (view === 'home') renderHome();
+  if (view === 'practice') renderWritingSelector();
+}
+
+// ============================================================
+// HOME RENDERING
+// ============================================================
+let todayKanjiIndex = 0;
+
+function renderHome() {
+  todayKanjiIndex = Math.floor(Date.now() / 86400000) % KANJI.length;
+  const k = KANJI[todayKanjiIndex];
+  document.getElementById('daily-char').textContent = k.char;
+  document.getElementById('daily-meaning').textContent = k.meaning;
+  document.getElementById('daily-tamil').textContent = k.tamil;
+  document.getElementById('daily-on').textContent = '音: ' + (k.onyomi[0] || '-');
+  document.getElementById('daily-kun').textContent = '訓: ' + (k.kunyomi[0] || '-');
+
+  const lessonEl = document.getElementById('home-lessons');
+  lessonEl.innerHTML = LESSONS.slice(0,4).map(l => {
+    const kanjis = KANJI.slice(l.kanjiRange[0], l.kanjiRange[1]+1);
+    const prog = calcLessonProgress(l);
+    return `<div class="lesson-card" onclick="openLesson(${l.id})" style="border-left:3px solid ${l.color}">
+      <div class="lesson-num" style="background:${l.color}22;border-color:${l.color}44;color:${l.color}">${l.id}</div>
+      <div class="lesson-info">
+        <div class="lesson-name">${l.name}</div>
+        <div class="lesson-meta"><span>${l.topic}</span><span>${kanjis.length} kanji</span></div>
+        <div class="lesson-progress"><div class="lesson-progress-bar" style="width:${prog}%"></div></div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </div>`;
+  }).join('');
+
+  updateHeaderStats();
+}
+
+function calcLessonProgress(lesson) {
+  const kanjis = KANJI.slice(lesson.kanjiRange[0], lesson.kanjiRange[1]+1);
+  const known = kanjis.filter((k,i) => getKanjiStatus(lesson.kanjiRange[0]+i) === 'known').length;
+  return Math.round((known/kanjis.length)*100);
+}
+
+// ============================================================
+// KANJI LIBRARY
+// ============================================================
+let libFilter = 'all';
+
+function renderLibraryFilters() {
+  const filtersEl = document.getElementById('lib-filters');
+  const levels = ['all', 'N5', 'N4', 'N3', 'N2', 'N1', 'known', 'review', 'difficult'];
+  filtersEl.innerHTML = levels.map(f =>
+    `<div class="filter-chip ${libFilter === f ? 'active' : ''}" onclick="setLibFilter('${f}')">${f === 'all' ? 'All' : f}</div>`
+  ).join('');
+}
+
+function setLibFilter(f) {
+  libFilter = f;
+  renderLibrary();
+}
+
+function renderLibrary() {
+  renderLibraryFilters();
+  const q = (document.getElementById('lib-search').value || '').toLowerCase();
+  let filtered = KANJI.map((k,i) => ({...k, idx:i})).filter((k,i) => {
+    if (q) {
+      return k.char.includes(q) || k.meaning.toLowerCase().includes(q) || k.tamil.includes(q) ||
+        k.onyomi.some(r => r.toLowerCase().includes(q)) || k.kunyomi.some(r => r.includes(q));
+    }
+    return true;
+  }).filter((k,i) => {
+    if (libFilter === 'all') return true;
+    if (['N5','N4','N3','N2','N1'].includes(libFilter)) return k.jlpt === libFilter;
+    if (['known','review','difficult'].includes(libFilter)) return getKanjiStatus(k.idx) === libFilter;
+    return true;
+  });
+
+  document.getElementById('lib-count').textContent = `${filtered.length} kanji found`;
+  document.getElementById('kanji-grid').innerHTML = filtered.map(k =>
+    `<div class="kanji-tile status-${getKanjiStatus(k.idx)}" onclick="openKanjiModal(${k.idx})">
+      <div class="tile-status-dot"></div>
+      <div class="tile-char">${k.char}</div>
+      <div class="tile-mean">${k.tamil.split(' / ')[0]}</div>
+    </div>`
+  ).join('');
+}
+
+// ============================================================
+// KANJI MODAL
+// ============================================================
+let currentModalIdx = 0;
+
+function openKanjiModal(idx) {
+  currentModalIdx = idx;
+  const k = KANJI[idx];
+  const status = getKanjiStatus(idx);
+  const modal = document.getElementById('modal-content');
+
+  modal.innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="modal-kanji-display">
+      <div class="modal-kanji-top">
+        <span class="tag tag-${k.jlpt.toLowerCase()}">${k.jlpt}</span>
+        <span style="font-size:0.75rem;color:var(--text3)">${k.strokes} strokes</span>
+      </div>
+      <span class="modal-kanji-char">${k.char}</span>
+      <div class="modal-meaning-en">${k.meaning}</div>
+      <div class="modal-meaning-ta">${k.tamil}</div>
+      <div class="modal-tamil-exp">${k.tamilExp}</div>
+    </div>
+    <div class="readings-grid">
+      <div class="reading-box">
+        <div class="reading-type on-type">音読み (Onyomi)</div>
+        <div class="reading-value">${k.onyomi.length ? k.onyomi.join('、') : '—'}</div>
+        <div style="font-size:0.65rem;color:var(--text3);margin-top:4px">Chinese-origin reading</div>
+      </div>
+      <div class="reading-box">
+        <div class="reading-type kun-type">訓読み (Kunyomi)</div>
+        <div class="reading-value">${k.kunyomi.length ? k.kunyomi.join('、') : '—'}</div>
+        <div style="font-size:0.65rem;color:var(--text3);margin-top:4px">Japanese-origin reading</div>
+      </div>
+    </div>
+    <div class="examples-section">
+      <div class="section-title" style="margin-top:0">எடுத்துக்காட்டுகள் — Examples</div>
+      ${k.examples.map(ex => `
+        <div class="example-item">
+          <div class="example-word"><ruby>${ex.word}<rp>(</rp><rt>${ex.reading}</rt><rp>)</rp></ruby></div>
+          <div class="example-reading">${ex.reading}</div>
+          <div class="example-tamil">${ex.tamil}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="section-title" style="margin-top:4px">நிலையை குறிக்கவும் — Mark Status</div>
+    <div class="status-buttons">
+      <button class="status-btn known ${status==='known'?'active':''}" onclick="setStatusFromModal(${idx},'known')">✓ தெரியும்<br><span style="font-size:0.62rem;opacity:0.8">Known</span></button>
+      <button class="status-btn review ${status==='review'?'active':''}" onclick="setStatusFromModal(${idx},'review')">↻ மறுபடியும்<br><span style="font-size:0.62rem;opacity:0.8">Review</span></button>
+      <button class="status-btn difficult ${status==='difficult'?'active':''}" onclick="setStatusFromModal(${idx},'difficult')">✕ கடினம்<br><span style="font-size:0.62rem;opacity:0.8">Difficult</span></button>
+    </div>
+    <div class="modal-nav">
+      <button class="btn btn-ghost" onclick="navigateModal(-1)">← Prev</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+      <button class="btn btn-primary" onclick="navigateModal(1)">Next →</button>
+    </div>
+  `;
+
+  document.getElementById('kanji-modal').classList.add('open');
+}
+
+function setStatusFromModal(idx, status) {
+  setKanjiStatus(idx, status);
+  addActivity(`Marked <strong>${KANJI[idx].char}</strong> as ${status}`);
+  // Re-render buttons
+  document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.status-btn.${status}`).classList.add('active');
+  showToast(`${KANJI[idx].char} → ${status}`, 'success');
+  if (currentView === 'library') renderLibrary();
+}
+
+function navigateModal(dir) {
+  const newIdx = (currentModalIdx + dir + KANJI.length) % KANJI.length;
+  openKanjiModal(newIdx);
+}
+
+function closeModal() { document.getElementById('kanji-modal').classList.remove('open'); }
+
+// ============================================================
+// LESSONS
+// ============================================================
+function renderLessonsList() {
+  // Show the list, hide detail
+  document.getElementById('lessons-list-view').style.display = 'block';
+  document.getElementById('lesson-detail-view').style.display = 'none';
+
+  document.getElementById('lessons-list').innerHTML = LESSONS.map(l => {
+    const kanjis = KANJI.slice(l.kanjiRange[0], l.kanjiRange[1]+1);
+    const prog = calcLessonProgress(l);
+    return `<div class="lesson-card" onclick="openLesson(${l.id})" style="border-left:3px solid ${l.color}">
+      <div class="lesson-num" style="background:${l.color}22;border-color:${l.color}44;color:${l.color}">${l.id}</div>
+      <div class="lesson-info">
+        <div class="lesson-name">${l.name} — ${l.nameEn}</div>
+        <div class="lesson-meta">
+          <span>${l.topic}</span>
+          <span>${kanjis.length} kanji</span>
+          <span class="tag tag-n5" style="font-size:0.58rem">${prog}% done</span>
+        </div>
+        <div class="lesson-progress"><div class="lesson-progress-bar" style="width:${prog}%"></div></div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </div>`;
+  }).join('');
+}
+
+let lessonStudyIdx = 0;
+let lessonMode = 'study';
+let currentLesson = null;
+
+function openLesson(lessonId) {
+  navigate('lessons');
+  currentLesson = LESSONS.find(l => l.id === lessonId);
+  if (!currentLesson) return;
+  lessonStudyIdx = 0;
+  lessonMode = 'study';
+  document.getElementById('lessons-list-view').style.display = 'none';
+  document.getElementById('lesson-detail-view').style.display = 'block';
+  renderLessonDetail();
+}
+
+function renderLessonDetail() {
+  const l = currentLesson;
+  const kanjis = KANJI.slice(l.kanjiRange[0], l.kanjiRange[1]+1);
+  const k = kanjis[lessonStudyIdx];
+  const globalIdx = l.kanjiRange[0] + lessonStudyIdx;
+  const status = getKanjiStatus(globalIdx);
+
+  const container = document.getElementById('lesson-detail-view');
+  container.innerHTML = `
+    <button class="btn btn-ghost btn-sm mb-16" onclick="renderLessonsList()">← Back to Lessons</button>
+    <div class="lesson-header" style="border-top:3px solid ${l.color}">
+      <div class="lesson-header-title">${l.name}</div>
+      <div class="lesson-header-sub">${l.topic} • ${kanjis.length} kanji</div>
+      <div class="lesson-mode-tabs">
+        <div class="mode-tab ${lessonMode==='study'?'active':''}" onclick="setLessonMode('study')">📖 Study</div>
+        <div class="mode-tab ${lessonMode==='quiz'?'active':''}" onclick="setLessonMode('quiz')">📝 Quiz</div>
+      </div>
+    </div>
+    ${lessonMode === 'study' ? renderStudyMode(k, globalIdx, kanjis.length) : ''}
+  `;
+  if (lessonMode === 'quiz') {
+    container.innerHTML += `<div id="lesson-quiz-inline"></div>`;
+    startLessonQuiz(kanjis);
+  }
+}
+
+function setLessonMode(mode) { lessonMode = mode; renderLessonDetail(); }
+
+function renderStudyMode(k, globalIdx, total) {
+  return `
+    <div class="study-card">
+      <div class="study-counter">${lessonStudyIdx+1} / ${total}</div>
+      <div class="study-card-kanji">${k.char}</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        ${k.onyomi.map(r => `<span class="reading-pill on">音 ${r}</span>`).join('')}
+        ${k.kunyomi.map(r => `<span class="reading-pill kun">訓 ${r}</span>`).join('')}
+        <span class="tag tag-${k.jlpt.toLowerCase()}">${k.jlpt}</span>
+      </div>
+      <div class="study-card-meaning">${k.meaning}</div>
+      <div class="study-card-tamil">${k.tamil}</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-bottom:12px;font-family:'Noto Sans Tamil',sans-serif;line-height:1.6">${k.tamilExp}</div>
+      ${k.examples.map(ex => `
+        <div class="example-item" style="text-align:left">
+          <div class="example-word"><ruby>${ex.word}<rp>(</rp><rt>${ex.reading}</rt><rp>)</rp></ruby></div>
+          <div class="example-tamil">${ex.tamil}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn btn-sm" style="background:rgba(76,175,125,0.2);color:var(--green);border:1px solid rgba(76,175,125,0.3)" onclick="setKanjiStatus(${globalIdx},'known');nextStudy()">✓ Known</button>
+      <button class="btn btn-sm btn-ghost" onclick="setKanjiStatus(${globalIdx},'review')">↻ Review</button>
+      <button class="btn btn-sm" style="background:rgba(224,85,85,0.2);color:var(--red);border:1px solid rgba(224,85,85,0.3)" onclick="setKanjiStatus(${globalIdx},'difficult')">✕ Hard</button>
+    </div>
+    <div class="study-nav">
+      ${lessonStudyIdx>0 ? '<button class="btn btn-ghost btn-sm" onclick="prevStudy()">← Prev</button>' : ''}
+      <button class="btn btn-primary btn-sm" onclick="nextStudy()">Next →</button>
+    </div>
+  `;
+}
+
+function nextStudy() {
+  const l = currentLesson;
+  const kanjis = KANJI.slice(l.kanjiRange[0], l.kanjiRange[1]+1);
+  if (lessonStudyIdx < kanjis.length - 1) { lessonStudyIdx++; renderLessonDetail(); }
+  else { showToast('🎉 Lesson complete!', 'success'); addActivity(`Completed lesson: <strong>${l.name}</strong>`); saveState(); }
+}
+function prevStudy() { if (lessonStudyIdx > 0) { lessonStudyIdx--; renderLessonDetail(); } }
+
+function startLessonQuiz(kanjis) {
+  // Simple inline quiz for the lesson
+  let qi = 0, score = 0;
+  const container = document.getElementById('lesson-quiz-inline');
+  function showQ() {
+    if (qi >= Math.min(kanjis.length, 5)) {
+      container.innerHTML = `<div class="card text-center"><div style="font-size:2rem">🎊</div><div style="font-size:1.1rem;font-weight:800;margin:8px 0">Score: ${score}/${Math.min(kanjis.length,5)}</div><button class="btn btn-primary btn-sm" onclick="setLessonMode('study')">Back to Study</button></div>`;
+      return;
+    }
+    const k = kanjis[qi];
+    const wrong = KANJI.filter(x => x.char !== k.char).sort(() => Math.random()-0.5).slice(0,3);
+    const opts = [...wrong.map(x => x.tamil), k.tamil].sort(() => Math.random()-0.5);
+    container.innerHTML = `
+      <div class="card" style="text-align:center;padding:24px">
+        <div style="font-size:0.7rem;color:var(--text3);margin-bottom:8px">Question ${qi+1}/${Math.min(kanjis.length,5)}</div>
+        <div style="font-family:'Noto Serif JP';font-size:4rem;color:var(--accent2)">${k.char}</div>
+        <div style="font-size:0.78rem;color:var(--text3);margin:8px 0">இந்த கஞ்சியின் தமிழ் பொருள் என்ன?</div>
+      </div>
+      <div class="quiz-options" style="margin-bottom:12px">
+        ${opts.map(opt => `<button class="quiz-option" onclick="answerLQ(this,'${opt.replace(/'/g,"\\'")}','${k.tamil.replace(/'/g,"\\'")}',${qi})">${opt}</button>`).join('')}
+      </div>
+    `;
+  }
+  window.answerLQ = (btn, chosen, correct, qIdx) => {
+    document.querySelectorAll('.quiz-option').forEach(b => b.classList.add('disabled'));
+    if (chosen === correct) { btn.classList.add('correct'); score++; showToast('✓ சரி!', 'success'); }
+    else {
+      btn.classList.add('wrong');
+      document.querySelectorAll('.quiz-option').forEach(b => { if (b.textContent.trim() === correct) b.classList.add('correct'); });
+      showToast('✗ தவறு!', 'error');
+    }
+    setTimeout(() => { qi++; showQ(); }, 1000);
+  };
+  showQ();
+}
+
+// ============================================================
+// GAMES / QUIZ
+// ============================================================
+let quizState = { type:null, questions:[], qi:0, score:0, streak:0 };
+
+function startQuiz(type) {
+  navigate('games');
+  document.getElementById('game-select-area').style.display = 'none';
+  document.querySelectorAll('.quiz-area').forEach(a => { a.classList.remove('active'); a.innerHTML = ''; });
+
+  const areaId = `quiz-${type}-area`;
+  document.getElementById(areaId).classList.add('active');
+
+  quizState = { type, questions: generateQuizQuestions(type), qi:0, score:0, streak:0 };
+  if (type === 'mcq') renderMCQ();
+  else if (type === 'reading') renderReadingQuiz();
+  else if (type === 'match') renderMatchGame();
+  else if (type === 'flashcard') renderFlashcards();
+}
+
+function generateQuizQuestions(type) {
+  const shuffled = [...KANJI].sort(() => Math.random()-0.5).slice(0, type==='match' ? 6 : 10);
+  return shuffled;
+}
+
+function quizBackToMenu() {
+  document.getElementById('game-select-area').style.display = 'block';
+  document.querySelectorAll('.quiz-area').forEach(a => { a.classList.remove('active'); a.innerHTML = ''; });
+  renderBestScores();
+}
+
+function renderMCQ() {
+  const area = document.getElementById('quiz-mcq-area');
+  const { questions, qi, score } = quizState;
+  if (qi >= questions.length) { showScorePopup(score, questions.length, 'mcq'); return; }
+
+  const k = questions[qi];
+  const wrong = KANJI.filter(x => x.char !== k.char).sort(() => Math.random()-0.5).slice(0,3);
+  const opts = [...wrong.map(x => x.tamil), k.tamil].sort(() => Math.random()-0.5);
+  const pct = Math.round((qi/questions.length)*100);
+
+  area.innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="quizBackToMenu()">←</button>
+      <div class="quiz-title">🎯 அர்த்த வினா — Meaning Quiz</div>
+      <div class="quiz-score">${score}/${qi}</div>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-question-card">
+      <div class="quiz-q-label">இந்த கஞ்சியின் தமிழ் பொருள் என்ன?</div>
+      <div class="quiz-q-kanji">${k.char}</div>
+      <div class="quiz-q-hint">${k.jlpt} • ${k.strokes} strokes</div>
+    </div>
+    <div class="quiz-options">
+      ${opts.map(opt => `<button class="quiz-option" onclick="answerMCQ(this,'${opt.replace(/'/g,"\\'")}','${k.tamil.replace(/'/g,"\\'")}')">${opt}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+  `;
+}
+
+function answerMCQ(btn, chosen, correct) {
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.add('disabled'));
+  const fb = document.getElementById('q-feedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    quizState.score++; quizState.streak++;
+    fb.textContent = `✓ சரி! ${quizState.streak > 2 ? '🔥 '+quizState.streak+' streak!' : ''}`;
+    fb.className = 'quiz-feedback show correct-fb';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-option').forEach(b => { if(b.textContent.trim()===correct) b.classList.add('correct'); });
+    quizState.streak = 0;
+    fb.textContent = `✗ தவறு! சரியான விடை: ${correct}`;
+    fb.className = 'quiz-feedback show wrong-fb';
+  }
+  quizState.qi++;
+  setTimeout(renderMCQ, 1400);
+}
+
+function renderReadingQuiz() {
+  const area = document.getElementById('quiz-reading-area');
+  const { questions, qi, score } = quizState;
+  if (qi >= questions.length) { showScorePopup(score, questions.length, 'reading'); return; }
+
+  const k = questions[qi];
+  const correctReading = k.onyomi[0] || k.kunyomi[0] || '—';
+  const wrong = KANJI.filter(x => x.char !== k.char && (x.onyomi[0] || x.kunyomi[0]))
+    .sort(() => Math.random()-0.5).slice(0,3)
+    .map(x => x.onyomi[0] || x.kunyomi[0]);
+  const opts = [...wrong, correctReading].sort(() => Math.random()-0.5);
+  const pct = Math.round((qi/questions.length)*100);
+
+  area.innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="quizBackToMenu()">←</button>
+      <div class="quiz-title">📖 படிப்பு வினா — Reading Quiz</div>
+      <div class="quiz-score">${score}/${qi}</div>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-question-card">
+      <div class="quiz-q-label">இந்த கஞ்சியின் 音読み (onyomi) என்ன?</div>
+      <div class="quiz-q-kanji">${k.char}</div>
+      <div class="quiz-q-hint">${k.meaning}</div>
+    </div>
+    <div class="quiz-options">
+      ${opts.map(opt => `<button class="quiz-option font-jp" onclick="answerReading(this,'${opt}','${correctReading}')">${opt}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="q-feedback-r"></div>
+  `;
+}
+
+function answerReading(btn, chosen, correct) {
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.add('disabled'));
+  const fb = document.getElementById('q-feedback-r');
+  if (chosen === correct) {
+    btn.classList.add('correct'); quizState.score++;
+    fb.textContent = '✓ சரி!'; fb.className = 'quiz-feedback show correct-fb';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-option').forEach(b => { if(b.textContent.trim()===correct) b.classList.add('correct'); });
+    fb.textContent = `✗ தவறு! ${correct}`; fb.className = 'quiz-feedback show wrong-fb';
+  }
+  quizState.qi++;
+  setTimeout(renderReadingQuiz, 1400);
+}
+
+function renderMatchGame() {
+  const area = document.getElementById('quiz-match-area');
+  const qs = quizState.questions;
+  let selected = null, matched = new Set(), errors = 0;
+  const kanjis = qs.map((k,i) => ({id:'k'+i, type:'kanji', val:k.char, pair:i}));
+  const meanings = qs.map((k,i) => ({id:'m'+i, type:'meaning', val:k.tamil.split(' / ')[0], pair:i}));
+  const items = [...kanjis, ...meanings].sort(() => Math.random()-0.5);
+
+  function render() {
+    area.innerHTML = `
+      <div class="quiz-header">
+        <button class="quiz-back" onclick="quizBackToMenu()">←</button>
+        <div class="quiz-title">🔗 பொருத்தம் — Match Game</div>
+        <div class="quiz-score">${matched.size/2}/${qs.length} pairs</div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text2);margin-bottom:12px;text-align:center">கஞ்சி மற்றும் அதன் தமிழ் பொருளை பொருத்தவும்</div>
+      <div class="match-grid">
+        ${items.map(item => `
+          <div id="${item.id}" class="match-item ${matched.has(item.pair) ? 'matched' : ''} ${item.type==='kanji'?'match-kanji-item':'match-meaning-item'}"
+            onclick="selectMatch('${item.id}', ${item.pair}, '${item.type}')">
+            ${item.val}
+          </div>
+        `).join('')}
+      </div>
+      ${matched.size/2 === qs.length ? `<div class="card text-center" style="margin-top:16px"><div style="font-size:1.5rem">🎉</div><div style="font-weight:800;margin:8px 0">All matched! Errors: ${errors}</div><button class="btn btn-primary btn-block" onclick="quizBackToMenu()">Done</button></div>` : ''}
+    `;
+  }
+
+  window.selectMatch = (id, pair, type) => {
+    if (matched.has(pair)) return;
+    const el = document.getElementById(id);
+    if (!selected) {
+      if (el.classList.contains('matched')) return;
+      selected = {id, pair, type};
+      el.classList.add('selected');
+    } else {
+      if (selected.id === id) { el.classList.remove('selected'); selected = null; return; }
+      if (selected.pair === pair && selected.type !== type) {
+        matched.add(pair);
+        selected = null;
+        quizState.score++;
+        showToast('✓ பொருத்தம்!', 'success');
+      } else {
+        errors++;
+        el.classList.add('wrong-flash');
+        document.getElementById(selected.id).classList.add('wrong-flash');
+        selected = null;
+        setTimeout(() => { document.querySelectorAll('.wrong-flash').forEach(e => e.classList.remove('wrong-flash', 'selected')); }, 500);
+      }
+      render();
+      return;
+    }
+    // re-render to show selection
+    const selEl = document.getElementById(selected.id);
+    if (selEl) selEl.classList.add('selected');
+  };
+
+  render();
+}
+
+// Flashcard state
+let fcIdx = 0;
+
+function renderFlashcards() {
+  const area = document.getElementById('quiz-flashcard-area');
+  fcIdx = 0;
+  renderFC();
+}
+
+function renderFC() {
+  const area = document.getElementById('quiz-flashcard-area');
+  const qs = quizState.questions;
+  if (fcIdx >= qs.length) {
+    area.innerHTML = `<div class="card text-center"><div style="font-size:2rem">✅</div><div style="font-weight:800;margin:8px 0">All ${qs.length} cards done!</div><div style="color:var(--text2);font-size:0.8rem;margin-bottom:16px">Known: ${quizState.score} / ${qs.length}</div><button class="btn btn-primary btn-block" onclick="quizBackToMenu()">Finish</button></div>`;
+    return;
+  }
+  const k = qs[fcIdx];
+  const globalIdx = KANJI.indexOf(k);
+  area.innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="quizBackToMenu()">←</button>
+      <div class="quiz-title">🃏 Flashcard Mode</div>
+      <div class="quiz-score">${fcIdx+1}/${qs.length}</div>
+    </div>
+    <div class="quiz-progress-bar" style="margin-bottom:16px">
+      <div class="quiz-progress-fill" style="width:${Math.round(fcIdx/qs.length*100)}%"></div>
+    </div>
+    <div class="flashcard-wrap" onclick="flipFC(this)">
+      <div class="flashcard" id="fc-card">
+        <div class="flashcard-face flashcard-front">
+          <div class="flashcard-kanji-big">${k.char}</div>
+          <div class="flashcard-tap">タップして確認 • Tap to reveal</div>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <div class="flashcard-back-content">
+            <div class="fb-meaning">${k.meaning}</div>
+            <div class="fb-tamil">${k.tamil}</div>
+            <div class="fb-readings">
+              ${k.onyomi.map(r => `<span class="reading-pill on">音 ${r}</span>`).join('')}
+              ${k.kunyomi.map(r => `<span class="reading-pill kun">訓 ${r}</span>`).join('')}
+            </div>
+            ${k.examples[0] ? `<div style="font-size:0.72rem;color:var(--text2)"><ruby>${k.examples[0].word}<rt>${k.examples[0].reading}</rt></ruby> — ${k.examples[0].tamil}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-btns" id="fc-action-btns" style="display:none">
+      <button class="btn btn-danger" onclick="fcAnswer('difficult')">✕ Hard</button>
+      <button class="btn btn-success" onclick="fcAnswer('known')">✓ Known</button>
+    </div>
+    <div style="text-align:center;font-size:0.7rem;color:var(--text3);margin-top:12px">Flip the card, then rate yourself</div>
+  `;
+}
+
+function flipFC(wrap) {
+  const card = document.getElementById('fc-card');
+  card.classList.toggle('flipped');
+  document.getElementById('fc-action-btns').style.display = card.classList.contains('flipped') ? 'grid' : 'none';
+}
+
+function fcAnswer(status) {
+  const k = quizState.questions[fcIdx];
+  const idx = KANJI.indexOf(k);
+  setKanjiStatus(idx, status);
+  if (status === 'known') { quizState.score++; showToast('✓ +1 Known!', 'success'); }
+  else showToast('Marked as difficult', 'error');
+  fcIdx++;
+  setTimeout(renderFC, 200);
+}
+
+// ============================================================
+// SCORE POPUP
+// ============================================================
+function showScorePopup(score, total, type) {
+  state.quizCount++;
+  const key = `best_${type}`;
+  if (!state.quizScores[key] || score > state.quizScores[key]) state.quizScores[key] = score;
+  saveState();
+  addActivity(`Completed ${type} quiz: <strong>${score}/${total}</strong>`);
+
+  const pct = Math.round(score/total*100);
+  let emoji = pct >= 80 ? '🏆' : pct >= 60 ? '🎊' : '📚';
+  let msg = pct >= 80 ? 'சிறந்தது! Excellent work!' : pct >= 60 ? 'நல்லது! Keep it up!' : 'தொடர்ந்து பயிற்சி செய்யுங்கள்!';
+  document.getElementById('sp-emoji').textContent = emoji;
+  document.getElementById('sp-score').textContent = `${score}/${total}`;
+  document.getElementById('sp-msg').textContent = msg;
+  document.getElementById('score-popup').classList.add('open');
+}
+
+function closeScorePopup() {
+  document.getElementById('score-popup').classList.remove('open');
+  quizBackToMenu();
+}
+
+function renderBestScores() {
+  const el = document.getElementById('best-scores');
+  const types = [['mcq','🎯 Meaning Quiz'],['reading','📖 Reading Quiz'],['match','🔗 Match Game'],['flashcard','🃏 Flashcards']];
+  el.innerHTML = types.map(([type, label]) => {
+    const best = state.quizScores[`best_${type}`] || 0;
+    return `<div class="card card-sm" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-size:0.82rem;font-weight:700">${label}</span>
+      <span style="color:var(--accent);font-weight:800;font-size:0.9rem">Best: ${best}/10</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// WRITING PRACTICE
+// ============================================================
+let canvas, ctx;
+let drawingStrokes = [];
+let currentStroke = [];
+let isDrawing = false;
+let showHint = true;
+let writeKanjiIdx = 0;
+
+function initCanvas() {
+  canvas = document.getElementById('writing-canvas');
+  if (!canvas) return;
+  ctx = canvas.getContext('2d');
+  const size = Math.min(canvas.parentElement.offsetWidth - 16, 400);
+  canvas.width = size;
+  canvas.height = size;
+  canvas.style.width = '100%';
+  canvas.style.height = 'auto';
+
+  // Mouse events
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  // Touch events
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, { passive: false });
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
+  canvas.addEventListener('touchend', e => { e.preventDefault(); endDraw(); }, { passive: false });
+
+  redrawCanvas();
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY
+  };
+}
+
+function startDraw(e) {
+  isDrawing = true;
+  currentStroke = [];
+  const pos = getPos(e);
+  currentStroke.push(pos);
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  const pos = getPos(e);
+  currentStroke.push(pos);
+  ctx.strokeStyle = '#1a0a2e';
+  ctx.lineWidth = Math.max(canvas.width/60, 4);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+}
+
+function endDraw() {
+  if (!isDrawing) return;
+  isDrawing = false;
+  if (currentStroke.length > 2) {
+    drawingStrokes.push([...currentStroke]);
+    const cnt = document.getElementById('stroke-count');
+    if (cnt) cnt.textContent = drawingStrokes.length;
+  }
+}
+
+function redrawCanvas() {
+  if (!ctx) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fafaf8';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height);
+  ctx.moveTo(0, canvas.height/2); ctx.lineTo(canvas.width, canvas.height/2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Redraw all strokes
+  drawingStrokes.forEach(stroke => {
+    ctx.beginPath();
+    ctx.strokeStyle = '#1a0a2e';
+    ctx.lineWidth = Math.max(canvas.width/60, 4);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    stroke.forEach((pt, i) => { if(i===0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+    ctx.stroke();
+  });
+}
+
+function clearCanvas() {
+  drawingStrokes = [];
+  if (ctx) redrawCanvas();
+  const cnt = document.getElementById('stroke-count');
+  if (cnt) cnt.textContent = '0';
+  const fb = document.getElementById('write-feedback');
+  if (fb) fb.textContent = '';
+}
+
+function undoStroke() {
+  if (drawingStrokes.length > 0) {
+    drawingStrokes.pop();
+    redrawCanvas();
+    const cnt = document.getElementById('stroke-count');
+    if (cnt) cnt.textContent = drawingStrokes.length;
+  }
+}
+
+function toggleHint() {
+  showHint = !showHint;
+  const hint = document.getElementById('canvas-hint');
+  if (hint) hint.style.opacity = showHint ? '1' : '0';
+}
+
+function writingDone() {
+  const fb = document.getElementById('write-feedback');
+  if (!fb) return;
+  if (drawingStrokes.length === 0) { fb.textContent = '✏️ Draw the kanji first!'; return; }
+  const messages = ['素晴らしい！ சிறந்தது!', '頑張りました！ நல்ல முயற்சி!', 'Good attempt! மேலும் பயிற்சி செய்யுங்கள்!', 'Keep practicing! தொடர்ந்து முயற்சி செய்!'];
+  fb.textContent = messages[Math.floor(Math.random()*messages.length)];
+  const k = KANJI[writeKanjiIdx];
+  addActivity(`Practiced writing: <strong>${k.char}</strong>`);
+}
+
+function renderWritingSelector() {
+  const sel = document.getElementById('write-selector');
+  if (!sel) return;
+  sel.innerHTML = KANJI.map((k,i) =>
+    `<div class="write-kanji-btn ${i===writeKanjiIdx?'active':''}" onclick="selectWriteKanji(${i})">${k.char}</div>`
+  ).join('');
+  selectWriteKanji(writeKanjiIdx);
+  setTimeout(initCanvas, 50);
+}
+
+function selectWriteKanji(idx) {
+  writeKanjiIdx = idx;
+  const k = KANJI[idx];
+  const charEl = document.getElementById('write-current-char');
+  const meanEl = document.getElementById('write-current-meaning');
+  const tamilEl = document.getElementById('write-current-tamil');
+  const readEl = document.getElementById('write-current-readings');
+  const hint = document.getElementById('canvas-hint');
+  const sel = document.getElementById('write-selector');
+
+  if (charEl) charEl.textContent = k.char;
+  if (meanEl) meanEl.textContent = k.meaning;
+  if (tamilEl) tamilEl.textContent = k.tamil;
+  if (readEl) readEl.innerHTML = k.onyomi.map(r=>`<span class="reading-pill on">音 ${r}</span>`).join('') + k.kunyomi.map(r=>`<span class="reading-pill kun">訓 ${r}</span>`).join('');
+  if (hint) hint.textContent = k.char;
+
+  // Update selector UI
+  sel.querySelectorAll('.write-kanji-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+
+  clearCanvas();
+  setTimeout(() => { if (!canvas) initCanvas(); else redrawCanvas(); }, 50);
+}
+
+// ============================================================
+// PROGRESS VIEW
+// ============================================================
+function renderProgress() {
+  const sc = getStatusCounts();
+  document.getElementById('pg-known').textContent = sc.known;
+  document.getElementById('pg-streak').textContent = state.streak;
+  document.getElementById('pg-diff').textContent = sc.diff;
+  document.getElementById('pg-quiz').textContent = state.quizCount;
+
+  // JLPT breakdown
+  const jlptEl = document.getElementById('jlpt-progress');
+  const levels = ['N5','N4','N3','N2','N1'];
+  const colors = ['var(--green)','var(--blue)','var(--purple)','var(--pink)','var(--red)'];
+  jlptEl.innerHTML = levels.map((lvl, li) => {
+    const total = KANJI.filter(k => k.jlpt === lvl).length;
+    const known = KANJI.map((k,i) => ({...k,i})).filter(k => k.jlpt === lvl && getKanjiStatus(k.i) === 'known').length;
+    const pct = total > 0 ? Math.round(known/total*100) : 0;
+    return `<div class="progress-bar-item">
+      <div class="pb-header">
+        <span class="pb-label"><span class="tag tag-${lvl.toLowerCase()}">${lvl}</span> ${lvl} Kanji</span>
+        <span class="pb-value">${known}/${total} (${pct}%)</span>
+      </div>
+      <div class="pb-track"><div class="pb-fill" style="width:${pct}%;background:${colors[li]}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Recent activity
+  const actEl = document.getElementById('recent-activity');
+  if (state.recentActivity.length === 0) {
+    actEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📖</div><div class="empty-text">இன்னும் செயல்பாடு இல்லை. படிக்க ஆரம்பியுங்கள்!</div></div>';
+  } else {
+    actEl.innerHTML = state.recentActivity.slice(0,10).map(a => {
+      const ago = Math.round((Date.now()-a.time)/60000);
+      const timeStr = ago < 1 ? 'Just now' : ago < 60 ? `${ago}m ago` : `${Math.round(ago/60)}h ago`;
+      return `<div class="activity-item">
+        <div class="activity-icon" style="background:var(--card2)">📌</div>
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${timeStr}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function toggleSetting(key) {
+  state.settings[key] = !state.settings[key];
+  document.getElementById(`toggle-${key}`).classList.toggle('on', state.settings[key]);
+  saveState();
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'kanji-master-progress.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Progress exported!', 'success');
+}
+
+function resetData() {
+  if (confirm('All progress will be deleted. Are you sure? / நிச்சயமாக அழிக்கவேண்டுமா?')) {
+    localStorage.removeItem('kanjiMasterState');
+    location.reload();
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = '') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-10px)'; setTimeout(() => toast.remove(), 300); }, 1800);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function initSettings() {
+  Object.keys(state.settings).forEach(key => {
+    const el = document.getElementById(`toggle-${key}`);
+    if (el) el.classList.toggle('on', state.settings[key]);
+  });
+}
+
+function init() {
+  loadState();
+  renderHome();
+  renderLibraryFilters();
+  renderLibrary();
+  renderLessonsList();
+  renderBestScores();
+  initSettings();
+  updateHeaderStats();
+
+  // Update streak
+  const today = new Date().toDateString();
+  if (state.lastStudyDate !== today) {
+    if (state.lastStudyDate !== new Date(Date.now()-86400000).toDateString()) state.streak = 0;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
